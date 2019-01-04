@@ -46,18 +46,33 @@ sampleMessages =
     , { author = "progger", time = "11:22 AM", text = "Ha, I filed an issue about this back in oct.  Used my own workaround!" }
     ]
 
+-- A thread will be defined as a channel, message, etc... (anything where a conversation can occur)
+createThreadPanel : List String -> String -> Element msg
+createThreadPanel channels activeChannel =
+    let
+        channelPanel = createChannelPanel channels activeChannel
+    in
+        column
+            [ height fill
+            , width <| fillPortion 1
+            , paddingXY 0 10
+            , Background.color <| rgb255 47 61 78
+            , Font.color <| rgb255 255 255 255
+            -- , explain Debug.todo
+            ]
+            [ channelPanel
+            ]
 
 createChannelPanel : List String -> String -> Element msg
 createChannelPanel channels activeChannel =
-    column
-        [ height fill
-        , width <| fillPortion 1
-        , paddingXY 0 10
-        , Background.color <| rgb255 47 61 78
-        , Font.color <| rgb255 255 255 255
-        ]
-    <|
-        List.map (createChannelRow activeChannel) channels
+    let
+        channelRowList = List.map (createChannelRow activeChannel) channels
+    in
+        column
+            [
+            -- explain Debug.todo
+            ]
+            channelRowList
 
 createChannelRow : String -> String -> Element msg
 createChannelRow activeChannel channel =
@@ -184,13 +199,13 @@ createMessageTextbox =
 main : Html msg
 main =
     let
-        channelPanel = createChannelPanel sampleChannels sampleActiveChannel
+        threadPanel = createThreadPanel sampleChannels sampleActiveChannel
         chatPanel = createChatPanel sampleActiveChannel sampleMessages
     in
         -- layout [ ] <|
         layout [ height fill ] <|
             row [ height fill, width fill ]
-                [ channelPanel
+                [ threadPanel
                 , chatPanel
                 ]
 
