@@ -42,8 +42,10 @@ initialUserChannels : List Channel
 initialUserChannels =
     [ UserChannel "slackbot" UnfocusedRead Online
     , UserChannel "neumaneuma" UnfocusedRead Online
+    , UserChannel "randomUser1" UnfocusedRead Offline
+    , UserChannel "randomUser2" UnfocusedUnread Online
+    , UserChannel "randomUser3" UnfocusedUnread Offline
     , UserChannel "kofi" Focused Online
-    , UserChannel "mdgriffith" UnfocusedRead Offline
     ]
 
 
@@ -67,7 +69,10 @@ unfocusedChannelAttrs =
     [ Font.color <| rgb255 140 148 157 ]
 
 
+
 -- This name is horrible... not sure how to name effectively here
+
+
 createChannelPanelContainer : Element msg
 createChannelPanelContainer =
     let
@@ -147,6 +152,7 @@ createChannelRowHelper name status channelSymbol =
             row channelAttrs
                 [ el unfocusedChannelAttrs channelSymbol
                 , el [ Font.semiBold ] <| text name
+                , image [ alignRight ] { src = "../img/unreadChat.png", description = "unread messages" }
                 ]
 
 
@@ -292,7 +298,7 @@ main =
             createChannelPanelContainer
 
         chatPanel =
-            createChatPanel "kofi" sampleChannelMessages
+            createChatPanel "kofi" sampleMessages
     in
     -- layout [ ] <|
     layout [ height fill ] <|
