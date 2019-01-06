@@ -37,13 +37,15 @@ initialGroupChannels =
     , GroupChannel "news-and-links" UnfocusedUnread
     ]
 
+
 initialUserChannels : List Channel
 initialUserChannels =
     [ UserChannel "slackbot" UnfocusedRead Online
     , UserChannel "neumaneuma" UnfocusedRead Online
     , UserChannel "kofi" Focused Online
     , UserChannel "mdgriffith" UnfocusedRead Offline
-            ]
+    ]
+
 
 activeChannelAttrs : List (Attribute msg)
 activeChannelAttrs =
@@ -65,8 +67,9 @@ unfocusedChannelAttrs =
     [ Font.color <| rgb255 140 148 157 ]
 
 
-createThreadPanel : Element msg
-createThreadPanel=
+-- This name is horrible... not sure how to name effectively here
+createChannelPanelContainer : Element msg
+createChannelPanelContainer =
     let
         groupChannelPanel =
             createChannelPanel initialGroupChannels "Channels"
@@ -113,56 +116,36 @@ createChannelRow : Channel -> Element msg
 createChannelRow channel =
     case channel of
         UserChannel name channelStatus userStatus ->
-            createUserChannel name channelStatus userStatus
+            createChannelRowHelper name channelStatus <|
+                createUserStatusImage userStatus
 
         GroupChannel name status ->
-            createGroupChannel name status
+            createChannelRowHelper name status <|
+                text "# "
 
 
-createGroupChannel : String -> ChannelStatus -> Element msg
-createGroupChannel name status =
+
+-- Not thrilled about this name...
+
+
+createChannelRowHelper : String -> ChannelStatus -> Element msg -> Element msg
+createChannelRowHelper name status channelSymbol =
     case status of
         Focused ->
             row (activeChannelAttrs ++ channelAttrs)
-                [ el focusedChannelAttrs <| text "# "
+                [ el focusedChannelAttrs channelSymbol
                 , el [ Font.hairline ] <| text name
                 ]
 
         UnfocusedRead ->
             row channelAttrs
-                [ el unfocusedChannelAttrs <| text "# "
+                [ el unfocusedChannelAttrs channelSymbol
                 , el [ Font.hairline ] <| text name
                 ]
 
         UnfocusedUnread ->
             row channelAttrs
-                [ el unfocusedChannelAttrs <| text "# "
-                , el [ Font.semiBold ] <| text name
-                ]
-
-
-createUserChannel : String -> ChannelStatus -> UserStatus -> Element msg
-createUserChannel name channelStatus userStatus =
-    let
-        userStatusImage =
-            createUserStatusImage userStatus
-    in
-    case channelStatus of
-        Focused ->
-            row (activeChannelAttrs ++ channelAttrs)
-                [ el focusedChannelAttrs userStatusImage
-                , el [ Font.hairline ] <| text name
-                ]
-
-        UnfocusedRead ->
-            row channelAttrs
-                [ el unfocusedChannelAttrs userStatusImage
-                , el [ Font.semiBold ] <| text name
-                ]
-
-        UnfocusedUnread ->
-            row channelAttrs
-                [ el unfocusedChannelAttrs userStatusImage
+                [ el unfocusedChannelAttrs channelSymbol
                 , el [ Font.semiBold ] <| text name
                 ]
 
@@ -175,44 +158,6 @@ createUserStatusImage userStatus =
 
         Offline ->
             image [] { src = "../img/offlineStatus.png", description = "status: offline" }
-
-
--- createDirectMessages : List String -> String -> Element msg
--- createDirectMessages channels activeChannel =
---     let
---         channelRowList =
---             List.map (createDirectMessageRow activeChannel) channels
-
---         headerRow =
---             row
---                 [ paddingXY 15 5, width fill, Font.extraLight ]
---                 [ text "Direct Messages" ]
---     in
---     column
---         [ width fill
-
---         -- , explain Debug.todo
---         ]
---         (headerRow :: channelRowList)
-
-
--- createDirectMessageRow : String -> String -> Element msg
--- createDirectMessageRow activeChannel channel =
---     if channel == activeChannel then
---         row (activeChannelAttrs ++ channelAttrs)
---             [ el [ Font.color <| rgb255 198 218 236 ] <|
---                 image [] { src = "../img/onlineStatus.png", description = "status: online" }
---             , el [ Font.semiBold ] <|
---                 text channel
---             ]
-
---     else
---         row channelAttrs
---             [ el [ Font.color <| rgb255 198 218 236 ] <|
---                 image [] { src = "../img/offlineStatus.png", description = "status: offline" }
---             , el [ Font.semiBold ] <|
---                 text channel
---             ]
 
 
 createChatPanel : String -> List Message -> Element msg
@@ -344,7 +289,7 @@ main : Html msg
 main =
     let
         threadPanel =
-            createThreadPanel 
+            createChannelPanelContainer
 
         chatPanel =
             createChatPanel "kofi" sampleChannelMessages
