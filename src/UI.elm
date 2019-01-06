@@ -1,4 +1,4 @@
-module Main exposing (main)
+module UI exposing (createChannelPanelContainer, createChatPanel)
 
 import Element exposing (..)
 import Element.Background as Background
@@ -6,7 +6,6 @@ import Element.Border as Border
 import Element.Events exposing (..)
 import Element.Font as Font
 import Element.Input as Input
-import Html exposing (Html)
 import SampleMessages exposing (..)
 
 
@@ -302,20 +301,3 @@ createMessageTextbox =
         [ mouseOver [ Background.color <| rgb255 100 282 44 ]
         ]
         []
-
-
-main : Html msg
-main =
-    let
-        threadPanel =
-            createChannelPanelContainer
-
-        chatPanel =
-            createChatPanel "kofi" sampleMessages
-    in
-    -- layout [ ] <|
-    layout [ height fill ] <|
-        row [ height fill, width fill ]
-            [ threadPanel
-            , chatPanel
-            ]
