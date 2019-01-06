@@ -10,10 +10,15 @@ import Html exposing (Html)
 import SampleMessages exposing (..)
 
 
+type UnfocusedUnread
+    = WithNotification
+    | WithoutNotification
+
+
 type ChannelStatus
     = Focused
     | UnfocusedRead
-    | UnfocusedUnread
+    | UnfocusedUnread UnfocusedUnread
 
 
 type UserStatus
@@ -30,11 +35,11 @@ initialGroupChannels : List Channel
 initialGroupChannels =
     [ GroupChannel "ellie" UnfocusedRead
     , GroupChannel "elm-dev" UnfocusedRead
-    , GroupChannel "elm-discuss" UnfocusedUnread
-    , GroupChannel "elm-format" UnfocusedUnread
-    , GroupChannel "elm-ui" UnfocusedUnread
+    , GroupChannel "elm-discuss" <| UnfocusedUnread WithNotification
+    , GroupChannel "elm-format" <| UnfocusedUnread WithoutNotification
+    , GroupChannel "elm-ui" <| UnfocusedUnread WithoutNotification
     , GroupChannel "general" UnfocusedRead
-    , GroupChannel "news-and-links" UnfocusedUnread
+    , GroupChannel "news-and-links" <| UnfocusedUnread WithoutNotification
     ]
 
 
@@ -43,8 +48,10 @@ initialUserChannels =
     [ UserChannel "slackbot" UnfocusedRead Online
     , UserChannel "neumaneuma" UnfocusedRead Online
     , UserChannel "randomUser1" UnfocusedRead Offline
-    , UserChannel "randomUser2" UnfocusedUnread Online
-    , UserChannel "randomUser3" UnfocusedUnread Offline
+    , UserChannel "randomUser2" (UnfocusedUnread WithNotification) Online
+    , UserChannel "randomUser3" (UnfocusedUnread WithoutNotification) Offline
+    , UserChannel "randomUser4" (UnfocusedUnread WithNotification) Offline
+    , UserChannel "randomUser5" (UnfocusedUnread WithoutNotification) Online
     , UserChannel "kofi" Focused Online
     ]
 
@@ -148,11 +155,17 @@ createChannelRowHelper name status channelSymbol =
                 , el [ Font.hairline ] <| text name
                 ]
 
-        UnfocusedUnread ->
+        UnfocusedUnread WithNotification ->
             row channelAttrs
                 [ el unfocusedChannelAttrs channelSymbol
                 , el [ Font.semiBold ] <| text name
                 , image [ alignRight ] { src = "../img/unreadChat.png", description = "unread messages" }
+                ]
+
+        UnfocusedUnread WithoutNotification ->
+            row channelAttrs
+                [ el unfocusedChannelAttrs channelSymbol
+                , el [ Font.semiBold ] <| text name
                 ]
 
 
