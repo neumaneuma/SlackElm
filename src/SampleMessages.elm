@@ -1,7 +1,6 @@
 module SampleMessages exposing (..)
 
-type alias Message =
-    { author : String, time : String, text : String }
+import UI exposing (Message)
 
 sampleChannelMessages : List Message
 sampleChannelMessages =

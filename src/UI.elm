@@ -1,4 +1,4 @@
-module UI exposing (createChannelPanelContainer, createChatPanel)
+module UI exposing (..)
 
 import Element exposing (..)
 import Element.Background as Background
@@ -6,7 +6,16 @@ import Element.Border as Border
 import Element.Events exposing (..)
 import Element.Font as Font
 import Element.Input as Input
-import SampleMessages exposing (..)
+
+type Msg
+  = ReadMsg Channel -- channel becomes Focused
+  | RecvMsg Channel -- chat panel becomes populated with messages from the server
+  | SendMsg Channel -- chat message sent to server
+  | NewUserChannel Channel -- new channel added to user channels
+  | NewGroupChannel Channel -- new channel added to group channels
+
+type alias Model =
+    { author : String, time : String, text : String }
 
 
 type UnfocusedUnread
@@ -29,6 +38,9 @@ type Channel
     = GroupChannel String ChannelStatus
     | UserChannel String ChannelStatus UserStatus
 
+slackBotChannel : Channel
+slackBotChannel =
+    UserChannel "slackbot" UnfocusedRead Online
 
 initialGroupChannels : List Channel
 initialGroupChannels =
@@ -44,7 +56,7 @@ initialGroupChannels =
 
 initialUserChannels : List Channel
 initialUserChannels =
-    [ UserChannel "slackbot" UnfocusedRead Online
+    [ slackBotChannel
     , UserChannel "neumaneuma" UnfocusedRead Online
     , UserChannel "randomUser1" UnfocusedRead Offline
     , UserChannel "randomUser2" (UnfocusedUnread WithNotification) Online
@@ -178,7 +190,7 @@ createUserStatusImage userStatus =
             image [] { src = "../img/offlineStatus.png", description = "status: offline" }
 
 
-createChatPanel : String -> List Message -> Element msg
+createChatPanel : String -> List Model -> Element msg
 createChatPanel channelName messages =
     let
         header =
@@ -222,7 +234,7 @@ createHeader channelName =
         ]
 
 
-createMessagePanel : List Message -> Element msg
+createMessagePanel : List Model -> Element msg
 createMessagePanel messages =
     column
         [ padding 10
@@ -233,7 +245,7 @@ createMessagePanel messages =
         List.map messageEntry messages
 
 
-messageEntry : Message -> Element msg
+messageEntry : Model -> Element msg
 messageEntry message =
     column [ width fill, spacingXY 0 5 ]
         [ row [ spacingXY 10 0 ]
