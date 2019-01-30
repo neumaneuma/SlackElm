@@ -29,21 +29,23 @@ main =
 
 init : () -> (Model, Cmd Msg)
 init _ =
-    (ReadMsg slackBotChannel, Cmd.none)
+    ({ author = "author", time = "6:27AM", text = "test" }, Cmd.none)
 
 -- UPDATE
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case msg of
-    GotText result ->
-      case result of
-        Ok fullText ->
-          (Success fullText, Cmd.none)
+  (model, Cmd.none)
+  -- case msg of
+  --   ReadMsg channel ->-- channel becomes Focused
+  -- case channel of
+  --     GroupChannel name status ->
+  -- | RecvMsg Channel -- chat panel becomes populated with messages from the server
+  -- | SendMsg Channel -- chat message sent to server
+  -- | NewUserChannel Channel -- new channel added to user channels
+  -- | NewGroupChannel Channel -- new channel added to group channels
 
-        Err _ ->
-          (Failure, Cmd.none)
 
 
 
@@ -63,7 +65,7 @@ view : Model -> Html Msg
 view model =
   let
         channelPanel =
- createChannelPanelContainer
+            createChannelPanelContainer
 
         chatPanel =
             createChatPanel "kofi" sampleMessages

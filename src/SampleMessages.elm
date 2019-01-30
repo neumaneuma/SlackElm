@@ -1,8 +1,8 @@
 module SampleMessages exposing (..)
 
-import UI exposing (Message)
+import UI exposing (Model)
 
-sampleChannelMessages : List Message
+sampleChannelMessages : List Model
 sampleChannelMessages =
     [ { author = "augustin82", time = "6:09AM", text = "@gampleman I think you need to `clip` the `scrollable` element, and that that element should be larger than its parent, which (I think) means that the containing parent should have a fixed width" }
     , { author = "u0421793", time = "6:22AM", text = "I’ve been trying to make a few links on a page in elm and elm-ui but I’ve not found a way to make it work because I haven’t found any examples of elm-ui which incorporate an anchor element" }
@@ -19,7 +19,7 @@ sampleChannelMessages =
     ]
 
 
-sampleMessages : List Message
+sampleMessages : List Model 
 sampleMessages =
     [ { author = "neumaneuma", time = "2:17 PM", text = "i joined the elm slack workspace!" }
     , { author = "kofi", time = "2:23 PM", text = "hah you're so in it now! you've crossed the line from curious to.. something after curious\n#beginners is a _really_ good resource if you get stuck ever. it's wild how fast people are to respond" }
