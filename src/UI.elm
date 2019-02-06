@@ -67,22 +67,22 @@ initialUserChannels =
     ]
 
 
-activeChannelAttrs : List (Attribute msg)
+activeChannelAttrs : List (Attribute Msg)
 activeChannelAttrs =
     [ Background.color <| rgb255 97 150 201 ]
 
 
-channelAttrs : List (Attribute msg)
+channelAttrs : List (Attribute Msg)
 channelAttrs =
-    [ paddingXY 15 5, width fill, spacingXY 10 0 ]
+    [ paddingXY 15 5, width fill, spacingXY 10 0, onClick <| ReadMsg <| UserChannel "kofi" Focused Online]
 
 
-focusedChannelAttrs : List (Attribute msg)
+focusedChannelAttrs : List (Attribute Msg)
 focusedChannelAttrs =
     [ Font.color <| rgb255 198 218 236 ]
 
 
-unfocusedChannelAttrs : List (Attribute msg)
+unfocusedChannelAttrs : List (Attribute Msg)
 unfocusedChannelAttrs =
     [ Font.color <| rgb255 140 148 157 ]
 
@@ -91,7 +91,7 @@ unfocusedChannelAttrs =
 -- This name is horrible... not sure how to name effectively here
 
 
-createChannelPanelContainer : Element msg
+createChannelPanelContainer : Element Msg
 createChannelPanelContainer =
     let
         groupChannelPanel =
@@ -116,7 +116,7 @@ createChannelPanelContainer =
         ]
 
 
-createChannelPanel : List Channel -> String -> Element msg
+createChannelPanel : List Channel -> String -> Element Msg
 createChannelPanel channels headerName =
     let
         channelRowList =
@@ -135,7 +135,7 @@ createChannelPanel channels headerName =
         (headerRow :: channelRowList)
 
 
-createChannelRow : Channel -> Element msg
+createChannelRow : Channel -> Element Msg
 createChannelRow channel =
     case channel of
         UserChannel name channelStatus userStatus ->
@@ -151,7 +151,7 @@ createChannelRow channel =
 -- Not thrilled about this name...
 
 
-createChannelRowHelper : String -> ChannelStatus -> Element msg -> Element msg
+createChannelRowHelper : String -> ChannelStatus -> Element Msg -> Element Msg
 createChannelRowHelper name status channelSymbol =
     case status of
         Focused ->
@@ -180,7 +180,7 @@ createChannelRowHelper name status channelSymbol =
                 ]
 
 
-createUserStatusImage : UserStatus -> Element msg
+createUserStatusImage : UserStatus -> Element Msg
 createUserStatusImage userStatus =
     case userStatus of
         Online ->
@@ -190,7 +190,7 @@ createUserStatusImage userStatus =
             image [] { src = "../img/offlineStatus.png", description = "status: offline" }
 
 
-createChatPanel : String -> List Model -> Element msg
+createChatPanel : String -> List Model -> Element Msg
 createChatPanel channelName messages =
     let
         header =
@@ -212,7 +212,7 @@ createChatPanel channelName messages =
         [ header, messagePanel, footer ]
 
 
-createHeader : String -> Element msg
+createHeader : String -> Element Msg
 createHeader channelName =
     row
         [ width fill
@@ -234,7 +234,7 @@ createHeader channelName =
         ]
 
 
-createMessagePanel : List Model -> Element msg
+createMessagePanel : List Model -> Element Msg
 createMessagePanel messages =
     column
         [ padding 10
@@ -245,7 +245,7 @@ createMessagePanel messages =
         List.map messageEntry messages
 
 
-messageEntry : Model -> Element msg
+messageEntry : Model -> Element Msg
 messageEntry message =
     column [ width fill, spacingXY 0 5 ]
         [ row [ spacingXY 10 0 ]
@@ -254,7 +254,7 @@ messageEntry message =
         ]
 
 
-createFooter : Element msg
+createFooter : Element Msg
 createFooter =
     let
         messageTextBoxContainer =
@@ -271,7 +271,7 @@ createFooter =
         [ messageTextBoxContainer ]
 
 
-createMessageTextBoxContainer : Element msg
+createMessageTextBoxContainer : Element Msg
 createMessageTextBoxContainer =
     let
         plusSignButton =
@@ -295,7 +295,7 @@ createMessageTextBoxContainer =
         [ plusSignButton, messageTextBox ]
 
 
-createPlusSignButton : Element msg
+createPlusSignButton : Element Msg
 createPlusSignButton =
     row
         [ padding 15
@@ -307,7 +307,7 @@ createPlusSignButton =
         [ text "+" ]
 
 
-createMessageTextbox : Element msg
+createMessageTextbox : Element Msg
 createMessageTextbox =
     row
         [ mouseOver [ Background.color <| rgb255 100 282 44 ]
