@@ -1,60 +1,59 @@
 module Main exposing (main)
 
-import Html exposing (Html)
-import UI exposing (..)
-import SampleMessages exposing (..)
-import Element exposing (..)
 import Browser
-import Html exposing (Html, text, pre)
+import Element exposing (..)
+import Html exposing (Html, pre, text)
+import SampleMessages exposing (..)
+import UI exposing (..)
+
+
+
 -- import Http
-
-
-
 -- MAIN
 
 
 main =
-  Browser.element
-    { init = init
-    , update = update
-    , subscriptions = subscriptions
-    , view = view
-    }
+    Browser.element
+        { init = init
+        , update = update
+        , subscriptions = subscriptions
+        , view = view
+        }
+
 
 
 -- MODEL
 
 
-
-
-init : () -> (Model, Cmd Msg)
+init : () -> ( Model, Cmd Msg )
 init _ =
-    ({ author = "author", time = "6:27AM", text = "test" }, Cmd.none)
+    ( { author = "author", time = "6:27AM", text = "test" }, Cmd.none )
+
+
 
 -- UPDATE
 
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  (model, Cmd.none)
-  -- case msg of
-  --   ReadMsg channel ->-- channel becomes Focused
-  -- case channel of
-  --     GroupChannel name status ->
-  -- | RecvMsg Channel -- chat panel becomes populated with messages from the server
-  -- | SendMsg Channel -- chat message sent to server
-  -- | NewUserChannel Channel -- new channel added to user channels
-  -- | NewGroupChannel Channel -- new channel added to group channels
+    ( model, Cmd.none )
 
 
 
-
+-- case msg of
+--   ReadMsg channel ->-- channel becomes Focused
+-- case channel of
+--     GroupChannel name status ->
+-- | RecvMsg Channel -- chat panel becomes populated with messages from the server
+-- | SendMsg Channel -- chat message sent to server
+-- | NewUserChannel Channel -- new channel added to user channels
+-- | NewGroupChannel Channel -- new channel added to group channels
 -- SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.none
+    Sub.none
 
 
 
@@ -63,7 +62,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-  let
+    let
         channelPanel =
             createChannelPanelContainer
 

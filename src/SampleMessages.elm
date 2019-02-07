@@ -1,6 +1,7 @@
-module SampleMessages exposing (..)
+module SampleMessages exposing (sampleChannelMessages, sampleMessages)
 
 import UI exposing (Model)
+
 
 sampleChannelMessages : List Model
 sampleChannelMessages =
@@ -19,7 +20,7 @@ sampleChannelMessages =
     ]
 
 
-sampleMessages : List Model 
+sampleMessages : List Model
 sampleMessages =
     [ { author = "neumaneuma", time = "2:17 PM", text = "i joined the elm slack workspace!" }
     , { author = "kofi", time = "2:23 PM", text = "hah you're so in it now! you've crossed the line from curious to.. something after curious\n#beginners is a _really_ good resource if you get stuck ever. it's wild how fast people are to respond" }

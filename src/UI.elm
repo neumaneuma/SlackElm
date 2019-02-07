@@ -74,7 +74,7 @@ activeChannelAttrs =
 
 channelAttrs : List (Attribute Msg)
 channelAttrs =
-    [ paddingXY 15 5, width fill, spacingXY 10 0, onClick <| ReadMsg <| UserChannel "kofi" Focused Online]
+    [ paddingXY 15 5, width fill, spacingXY 10 0]
 
 
 focusedChannelAttrs : List (Attribute Msg)
@@ -137,13 +137,17 @@ createChannelPanel channels headerName =
 
 createChannelRow : Channel -> Element Msg
 createChannelRow channel =
+    let
+          onClickHandler = onClick <| ReadMsg -- why couldn't I use this as a partially applied function?
+    in
+    
     case channel of
         UserChannel name channelStatus userStatus ->
-            createChannelRowHelper name channelStatus <|
+            createChannelRowHelper name channelStatus (onClick <| ReadMsg <| UserChannel name Focused userStatus) <|
                 createUserStatusImage userStatus
 
         GroupChannel name status ->
-            createChannelRowHelper name status <|
+            createChannelRowHelper name status (onClick <| ReadMsg <| GroupChannel name Focused ) <|
                 text "# "
 
 
@@ -151,30 +155,30 @@ createChannelRow channel =
 -- Not thrilled about this name...
 
 
-createChannelRowHelper : String -> ChannelStatus -> Element Msg -> Element Msg
-createChannelRowHelper name status channelSymbol =
+createChannelRowHelper : String -> ChannelStatus -> Attribute Msg -> Element Msg -> Element Msg
+createChannelRowHelper name status onClickHandler channelSymbol =
     case status of
         Focused ->
-            row (activeChannelAttrs ++ channelAttrs)
+            row (activeChannelAttrs ++ channelAttrs) -- No need for an on click handler here
                 [ el focusedChannelAttrs channelSymbol
                 , el [ Font.hairline ] <| text name
                 ]
 
         UnfocusedRead ->
-            row channelAttrs
+            row (channelAttrs ++ onClickHandler)
                 [ el unfocusedChannelAttrs channelSymbol
                 , el [ Font.hairline ] <| text name
                 ]
 
         UnfocusedUnread WithNotification ->
-            row channelAttrs
+            row (channelAttrs ++ onClickHandler)
                 [ el unfocusedChannelAttrs channelSymbol
                 , el [ Font.semiBold ] <| text name
                 , image [ alignRight ] { src = "../img/unreadChat.png", description = "unread messages" }
                 ]
 
         UnfocusedUnread WithoutNotification ->
-            row channelAttrs
+            row (channelAttrs ++ onClickHandler)
                 [ el unfocusedChannelAttrs channelSymbol
                 , el [ Font.semiBold ] <| text name
                 ]
