@@ -36,18 +36,29 @@ init _ =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        ReadMsg channel ->
+            -- channel becomes Focused
+            ( { model | text = Debug.log "ReadMsg: " "RecvMsg" }, Cmd.none )
+
+        RecvMsg channel ->
+            -- chat panel becomes populated with messages from the server
+            ( { model | text = Debug.log "RecvMsg: " "RecvMsg" }, Cmd.none )
+
+        SendMsg channel ->
+            -- chat message sent to server
+            ( { model | text = Debug.log "SendMsg: " "SendMsg" }, Cmd.none )
+
+        NewUserChannel channel ->
+            -- new channel added to user channels
+            ( { model | text = Debug.log "NewUserChannel: " "NewUserChannel" }, Cmd.none )
+
+        NewGroupChannel channel ->
+            -- new channel added to group channels
+            ( { model | text = Debug.log "NewGroupChannel: " "NewGroupChannel" }, Cmd.none )
 
 
 
--- case msg of
---   ReadMsg channel ->-- channel becomes Focused
--- case channel of
---     GroupChannel name status ->
--- | RecvMsg Channel -- chat panel becomes populated with messages from the server
--- | SendMsg Channel -- chat message sent to server
--- | NewUserChannel Channel -- new channel added to user channels
--- | NewGroupChannel Channel -- new channel added to group channels
 -- SUBSCRIPTIONS
 
 
