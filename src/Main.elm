@@ -25,9 +25,23 @@ main =
 -- MODEL
 
 
+initializeChannel : ChannelMetadata -> Channel
+initializeChannel channelMetadata =
+    case channelMetadata of
+        UserChannel "kofi" _ _ ->
+            Channel channelMetadata sampleMessages
+
+        _ ->
+            Channel channelMetadata []
+
+
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( [ Channel (UserChannel "slackbot" UnfocusedRead Online) [ { author = "author", time = "6:27AM", text = "test" } ] ], Cmd.none )
+    let
+        model =
+            List.map initializeChannel (initialGroupChannels ++ initialUserChannels)
+    in
+    ( model, Cmd.none )
 
 
 
