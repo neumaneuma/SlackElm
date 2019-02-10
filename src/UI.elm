@@ -1,4 +1,4 @@
-module UI exposing (Channel(..), ChannelStatus(..), Model, Msg(..), UnfocusedUnread(..), UserStatus(..), activeChannelAttrs, channelAttrs, createChannelPanel, createChannelPanelContainer, createChannelRow, createChannelRowHelper, createChatPanel, createFooter, createHeader, createMessagePanel, createMessageTextBoxContainer, createMessageTextbox, createPlusSignButton, createUserStatusImage, focusedChannelAttrs, initialGroupChannels, initialUserChannels, messageEntry, slackBotChannel, unfocusedChannelAttrs)
+module UI exposing (Channel(..), ChannelMetadata(..), ChannelStatus(..), ChatMessage, Model, Msg(..), Name, UnfocusedUnread(..), UserStatus(..), activeChannelAttrs, channelAttrs, createChannelPanel, createChannelPanelContainer, createChannelRow, createChannelRowHelper, createChatPanel, createChatPanelHelper, createFooter, createHeader, createMessagePanel, createMessageTextBoxContainer, createMessageTextbox, createPlusSignButton, createUserStatusImage, focusedChannelAttrs, initialGroupChannels, initialUserChannels, messageEntry, slackBotChannel, unfocusedChannelAttrs)
 
 import Element exposing (..)
 import Element.Background as Background
@@ -9,14 +9,22 @@ import Element.Input as Input
 
 
 type Msg
-    = ReadMsg Channel -- channel becomes Focused
-    | RecvMsg Channel -- chat panel becomes populated with messages from the server
-    | SendMsg Channel -- chat message sent to server
-    | NewUserChannel Channel -- new channel added to user channels
-    | NewGroupChannel Channel -- new channel added to group channels
+    = ReadMsg ChannelMetadata -- channel becomes Focused
+    | RecvMsg ChannelMetadata -- chat panel becomes populated with messages from the server
+    | SendMsg ChannelMetadata -- chat message sent to server
+    | NewUserChannel ChannelMetadata -- new channel added to user channels
+    | NewGroupChannel ChannelMetadata -- new channel added to group channels
 
 
 type alias Model =
+    List Channel
+
+
+type Channel
+    = Channel ChannelMetadata (List ChatMessage)
+
+
+type alias ChatMessage =
     { author : String, time : String, text : String }
 
 
@@ -36,17 +44,21 @@ type UserStatus
     | Offline
 
 
-type Channel
-    = GroupChannel String ChannelStatus
-    | UserChannel String ChannelStatus UserStatus
+type ChannelMetadata
+    = GroupChannel Name ChannelStatus
+    | UserChannel Name ChannelStatus UserStatus
 
 
-slackBotChannel : Channel
+type alias Name =
+    String
+
+
+slackBotChannel : ChannelMetadata
 slackBotChannel =
     UserChannel "slackbot" UnfocusedRead Online
 
 
-initialGroupChannels : List Channel
+initialGroupChannels : List ChannelMetadata
 initialGroupChannels =
     [ GroupChannel "ellie" UnfocusedRead
     , GroupChannel "elm-dev" UnfocusedRead
@@ -58,7 +70,7 @@ initialGroupChannels =
     ]
 
 
-initialUserChannels : List Channel
+initialUserChannels : List ChannelMetadata
 initialUserChannels =
     [ slackBotChannel
     , UserChannel "neumaneuma" UnfocusedRead Online
@@ -120,7 +132,7 @@ createChannelPanelContainer =
         ]
 
 
-createChannelPanel : List Channel -> String -> Element Msg
+createChannelPanel : List ChannelMetadata -> String -> Element Msg
 createChannelPanel channels headerName =
     let
         channelRowList =
@@ -139,7 +151,7 @@ createChannelPanel channels headerName =
         (headerRow :: channelRowList)
 
 
-createChannelRow : Channel -> Element Msg
+createChannelRow : ChannelMetadata -> Element Msg
 createChannelRow channel =
     let
         onClickHandler =
@@ -201,8 +213,20 @@ createUserStatusImage userStatus =
             image [] { src = "../img/offlineStatus.png", description = "status: offline" }
 
 
-createChatPanel : String -> List Model -> Element Msg
-createChatPanel channelName messages =
+createChatPanel : Channel -> Element Msg
+createChatPanel channel =
+    case channel of
+        Channel channelMetadata messages ->
+            case channelMetadata of
+                UserChannel name _ _ ->
+                    createChatPanelHelper name messages
+
+                GroupChannel name _ ->
+                    createChatPanelHelper name messages
+
+
+createChatPanelHelper : String -> List ChatMessage -> Element Msg
+createChatPanelHelper channelName messages =
     let
         header =
             createHeader channelName
@@ -245,7 +269,7 @@ createHeader channelName =
         ]
 
 
-createMessagePanel : List Model -> Element Msg
+createMessagePanel : List ChatMessage -> Element Msg
 createMessagePanel messages =
     column
         [ padding 10
@@ -256,7 +280,7 @@ createMessagePanel messages =
         List.map messageEntry messages
 
 
-messageEntry : Model -> Element Msg
+messageEntry : ChatMessage -> Element Msg
 messageEntry message =
     column [ width fill, spacingXY 0 5 ]
         [ row [ spacingXY 10 0 ]

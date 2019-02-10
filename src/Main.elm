@@ -27,7 +27,7 @@ main =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { author = "author", time = "6:27AM", text = "test" }, Cmd.none )
+    ( [ Channel (UserChannel "slackbot" UnfocusedRead Online) [ { author = "author", time = "6:27AM", text = "test" } ] ], Cmd.none )
 
 
 
@@ -39,23 +39,43 @@ update msg model =
     case msg of
         ReadMsg channel ->
             -- channel becomes Focused
-            ( { model | text = Debug.log "ReadMsg: " "RecvMsg" }, Cmd.none )
+            let
+                text =
+                    Debug.log "ReadMsg: " "RecvMsg"
+            in
+            ( model, Cmd.none )
 
         RecvMsg channel ->
             -- chat panel becomes populated with messages from the server
-            ( { model | text = Debug.log "RecvMsg: " "RecvMsg" }, Cmd.none )
+            let
+                text =
+                    Debug.log "RecvMsg: " "RecvMsg"
+            in
+            ( model, Cmd.none )
 
         SendMsg channel ->
             -- chat message sent to server
-            ( { model | text = Debug.log "SendMsg: " "SendMsg" }, Cmd.none )
+            let
+                text =
+                    Debug.log "SendMsg: " "SendMsg"
+            in
+            ( model, Cmd.none )
 
         NewUserChannel channel ->
             -- new channel added to user channels
-            ( { model | text = Debug.log "NewUserChannel: " "NewUserChannel" }, Cmd.none )
+            let
+                text =
+                    Debug.log "NewUserChannel: " "NewUserChannel"
+            in
+            ( model, Cmd.none )
 
         NewGroupChannel channel ->
             -- new channel added to group channels
-            ( { model | text = Debug.log "NewGroupChannel: " "NewGroupChannel" }, Cmd.none )
+            let
+                text =
+                    Debug.log "NewGroupChannel: " "NewGroupChannel"
+            in
+            ( model, Cmd.none )
 
 
 
@@ -78,7 +98,7 @@ view model =
             createChannelPanelContainer
 
         chatPanel =
-            createChatPanel "kofi" sampleMessages
+            createChatPanel <| Channel slackBotChannel sampleMessages
     in
     -- layout [ ] <|
     layout [ height fill ] <|
