@@ -109,7 +109,7 @@ view : Model -> Html Msg
 view model =
     let
         channelPanel =
-            createChannelPanelContainer
+            createChannelPanelContainer model
 
         chatPanel =
             createChatPanel <| Channel slackBotChannel sampleMessages

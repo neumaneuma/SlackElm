@@ -107,21 +107,43 @@ unfocusedChannelAttrs =
 -- This name is horrible... not sure how to name effectively here
 
 
-createChannelPanelContainer : Element Msg
-createChannelPanelContainer =
+isUserChannel : Channel -> Bool
+isUserChannel channel =
+    case channel of
+        Channel channelMetadata _ ->
+            case channelMetadata of
+                GroupChannel _ _ ->
+                    False
+
+                UserChannel _ _ _ ->
+                    True
+
+
+isGroupChannel : Channel -> Bool
+isGroupChannel channel =
+    not <| isUserChannel channel
+
+
+createChannelPanelContainer : Model -> Element Msg
+createChannelPanelContainer model =
     let
+        groupChannels =
+            List.filter isGroupChannel model
+
+        userChannels =
+            List.filter isUserChannel model
+
         groupChannelPanel =
-            createChannelPanel initialGroupChannels "Channels"
+            createChannelPanel groupChannels "Channels"
 
         directMessagesPanel =
-            createChannelPanel initialUserChannels "Direct Messages"
+            createChannelPanel userChannels "Direct Messages"
     in
     column
         [ height fill
         , width <| fillPortion 1
         , paddingXY 0 10
         , Background.color <| rgb255 47 61 78
-        , Font.color <| rgb255 255 255 255
         , Font.size 15
         , spacingXY 0 20
 
@@ -132,7 +154,7 @@ createChannelPanelContainer =
         ]
 
 
-createChannelPanel : List ChannelMetadata -> String -> Element Msg
+createChannelPanel : List Channel -> String -> Element Msg
 createChannelPanel channels headerName =
     let
         channelRowList =
@@ -151,7 +173,7 @@ createChannelPanel channels headerName =
         (headerRow :: channelRowList)
 
 
-createChannelRow : ChannelMetadata -> Element Msg
+createChannelRow : Channel -> Element Msg
 createChannelRow channel =
     let
         onClickHandler =
@@ -160,13 +182,15 @@ createChannelRow channel =
         -- why couldn't I use this as a partially applied function?
     in
     case channel of
-        UserChannel name channelStatus userStatus ->
-            createChannelRowHelper name channelStatus (onClick <| ReadMsg <| UserChannel name Focused userStatus) <|
-                createUserStatusImage userStatus
+        Channel channelMetadata _ ->
+            case channelMetadata of
+                UserChannel name channelStatus userStatus ->
+                    createChannelRowHelper name channelStatus (onClick <| ReadMsg <| UserChannel name Focused userStatus) <|
+                        createUserStatusImage userStatus
 
-        GroupChannel name status ->
-            createChannelRowHelper name status (onClick <| ReadMsg <| GroupChannel name Focused) <|
-                text "# "
+                GroupChannel name status ->
+                    createChannelRowHelper name status (onClick <| ReadMsg <| GroupChannel name Focused) <|
+                        text "# "
 
 
 
