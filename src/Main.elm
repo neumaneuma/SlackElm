@@ -55,7 +55,7 @@ update msg model =
             -- channel becomes Focused
             let
                 text =
-                    Debug.log "ReadMsg: " "RecvMsg"
+                    Debug.log "ReadMsg: " "ReadMsg"
             in
             ( model, Cmd.none )
 
