@@ -236,7 +236,7 @@ createUserStatusImage userStatus =
         Offline ->
             image [] { src = "../img/offlineStatus.png", description = "status: offline" }
 
-
+-- TODO this should take in a model and use the Focused message to render the chat pane
 createChatPanel : Channel -> Element Msg
 createChatPanel channel =
     case channel of
